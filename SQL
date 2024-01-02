@@ -1,0 +1,109 @@
+use Sakila;
+
+# Task 1
+SELECT CONCAT(first_name, ' ', last_name) AS full_name
+FROM actor;
+
+# Task 2A
+SELECT first_name, COUNT(*) as name_count
+FROM actor
+GROUP BY first_name;
+# Task 2B
+SELECT first_name, COUNT(*) as name_count
+FROM actor
+GROUP BY first_name
+HAVING COUNT(*) = 1;
+
+# Task 3A
+SELECT last_name, COUNT(*) as name_count
+FROM actor
+GROUP BY last_name;
+# Task 3B
+SELECT last_name, COUNT(*) as name_count
+FROM actor
+GROUP BY last_name
+HAVING COUNT(*) = 1;
+
+# Task 4A
+select film_id, title, rating from film
+where rating = 'r';
+# Task 4B
+select film_id, title, rating from film 
+where rating in ('G','PG');
+
+# Task 5A
+select film_id, title, replacement_cost from film
+where replacement_cost < 11.00;
+# Task 5B
+select film_id, title, replacement_cost from film
+where replacement_cost between 11.00 and 20.00;
+
+ # Task 6
+ SELECT f.film_id, f.title, COUNT(fa.actor_id) AS actor_count
+FROM film f
+INNER JOIN film_actor fa ON f.film_id = fa.film_id
+GROUP BY f.film_id, f.title
+ORDER BY actor_count DESC
+LIMIT 3;
+
+# Task 7
+SELECT title
+FROM film
+WHERE title LIKE 'K%' OR title LIKE 'Q%'
+ORDER BY title;
+
+# Task 8
+SELECT CONCAT(a.first_name, ' ', a.last_name) AS actor_name
+FROM actor a
+JOIN film_actor fa ON a.actor_id = fa.actor_id
+JOIN film f ON fa.film_id = f.film_id
+WHERE f.title = 'Agent Truman';
+
+#Task 9
+SELECT f.title
+FROM film f
+JOIN film_category fc ON f.film_id = fc.film_id
+JOIN category c ON fc.category_id = c.category_id
+WHERE c.name = 'Family';
+
+# Task 10A
+SELECT 
+  rating,
+  MAX(rental_rate) AS max_rental_rate,
+  MIN(rental_rate) AS min_rental_rate
+FROM film
+GROUP BY rating
+ORDER BY rating;
+# Task 10B
+SELECT 
+  f.film_id,
+  f.title,
+  COUNT(r.rental_id) AS rental_count
+FROM film f
+JOIN inventory i ON f.film_id = i.film_id
+JOIN rental r ON i.inventory_id = r.inventory_id
+GROUP BY f.film_id, f.title
+ORDER BY rental_count DESC;
+
+# Task 11
+SELECT 
+  c.category_id,
+  c.name AS category_name,
+  AVG(f.replacement_cost) AS avg_replacement_cost,
+  AVG(f.rental_rate) AS avg_rental_rate
+FROM category c
+JOIN film_category fc ON c.category_id = fc.category_id
+JOIN film f ON fc.film_id = f.film_id
+GROUP BY c.category_id, c.name
+ORDER BY category_id;
+
+# Task 12
+SELECT 
+  c.category_id,
+  c.name AS category_name,
+  COUNT(fc.film_id) AS movie_count
+FROM category c
+LEFT JOIN film_category fc ON c.category_id = fc.category_id
+GROUP BY c.category_id, c.name
+ORDER BY category_id;
+
